@@ -1,0 +1,38 @@
+---
+- name: Start mongo with db path
+  service: 
+    name: mongod
+    state: started
+
+- name: Drop local db
+  template: src=dropLocal.j2 dest=/tmp/dropLocal.js
+
+- name: Run drop local db on primary
+  shell: mongo < /tmp/dropLocal.js
+
+- name: MongoDB - stop server
+  service: name=mongod state=stopped
+
+- name: Set Up mongod.conf
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Start mongo with db path
+  service: 
+    name: mongod
+    state: started
+
+- name: copy initRS script
+  template: src=initRS.j2 dest=/tmp/initRS.js
+
+- name: initiate replica set from first primary
+  shell: mongo < /tmp/initRS.js
+
+- name: Start mongo with db path
+  service: 
+    name: mongod
+    state: stopped

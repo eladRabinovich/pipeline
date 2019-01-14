@@ -1,0 +1,3 @@
+mongo_db_path: /exHD/db/mongo
+rep_name : bza
+diskLabel : diskmongolabel

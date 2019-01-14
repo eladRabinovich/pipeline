@@ -1,0 +1,24 @@
+---
+- name: Copy repo file to repos
+  copy: 
+   dest: /etc/yum.repos.d/mongodb.repo 
+   src: files/mongodb.repo 
+
+- name: Install MongoDB from repo
+  yum:
+   name: mongodb-org
+   state: present
+
+- name: MongoDB - stop server
+  service: name=mongod state=stopped
+
+- name: create ssl folder
+  file: path=/etc/ssl state=directory
+
+- name: Create self-signed SSL cert
+  command: openssl req -newkey rsa:2048 -new -x509 -days 365 -nodes -subj "/C=FR/ST=PACA/L=SophiaAntipolis/O=YourOrga/CN=contact@yourorga.com" -out /etc/ssl/mongodb-cert.crt -keyout /etc/ssl/mongodb-cert.key
+
+- name: Compile self-signed SSL cert in PEM file
+  shell: cat /etc/ssl/mongodb-cert.key /etc/ssl/mongodb-cert.crt > /etc/ssl/mongodb.pem
+
+  

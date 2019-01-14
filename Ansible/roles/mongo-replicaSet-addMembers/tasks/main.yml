@@ -1,0 +1,6 @@
+---
+- name: Copy addMembers to local
+  template: src=addMembers.j2 dest=/tmp/addMembers.js
+
+- name: Run addMembers on primary
+  shell: mongo < /tmp/addMembers.js

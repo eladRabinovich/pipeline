@@ -1,0 +1,65 @@
+---
+# Env installation playbook for GCP
+- name: Change secondaries db path and set replica-set
+  user: local
+  become_method: sudo
+  become: yes
+  hosts: secondary
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  roles:
+    - mongo-change-db-rs
+
+  # Create key file
+- name: Create local key file
+  hosts: localhost
+  tasks:
+  - name: create key file locally
+    local_action: shell openssl rand -base64 755 > /tmp/mongodb-keyfile
+
+  # copy key file to hosts
+- name: Copy key file from local to host
+  hosts: primary, secondary
+  user: local
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  become_method: sudo
+  become: yes
+  roles:
+    - role: set-key-files
+  
+  # start RS-Master
+- name: Start mongodb service at Master
+  hosts: primary
+  user: local
+  become_method: sudo
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  become: yes
+  roles:
+  - role: start-mongod-service
+  - role: wait_master
+
+  # add members to replica set
+- name: Add secondaries members to RS
+  hosts: primary
+  user: local
+  become_method: sudo
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  become: yes
+  roles:
+  - role: mongo-replicaSet-addMembers
+
+  # start mongodb service on secondaries
+- name: Start mongodb service on secondaries
+  hosts: secondary
+  user: local
+  become_method: sudo
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  become: yes
+  roles:
+  - role: start-mongod-service
+
+

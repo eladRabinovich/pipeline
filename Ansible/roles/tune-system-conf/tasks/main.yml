@@ -1,0 +1,58 @@
+---
+- name: Disabling SELinux
+  selinux:
+    state: disabled
+    
+- name: Change system limits in sysctl.conf
+  sysctl:
+    name: net.ipv4.tcp_keepalive_time
+    value: 300
+    state: present
+
+- name: configure system settings, max number of pending signals
+  pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: sigpending
+    value: 1966279
+
+- name: configure system settings, max number of pending signals
+  pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: sigpending
+    value: 1966279
+
+- name: configure system settings, max number of open files
+  pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nofile
+    value: 64000
+
+- name: configure system settings, max number of open files
+  pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: nofile
+    value: 64000
+
+- name: configure system settings, max number of processes
+  pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nproc
+    value: 32000
+
+- name: configure system settings, max number of processes
+  pam_limits:
+    domain: '*'
+    limit_type: soft
+    limit_item: nproc
+    value: 32000
+
+- name: reload settings from all system configuration files
+  shell: sysctl --system
+
+- name: reload ulimit from file
+  shell: sysctl -p

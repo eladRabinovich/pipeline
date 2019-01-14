@@ -1,0 +1,3 @@
+use admin
+db.auth("{{ hostvars[inventory_hostname]['db_user_admin_username'] }}","{{ hostvars[inventory_hostname]['db_user_admin_password']
+db.shutdownServer({force:true})

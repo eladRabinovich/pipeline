@@ -1,0 +1,31 @@
+---
+# DR env mongo installation & configuration playbook for GCP
+
+# Install mongodb on all host & tune OS configuration
+- name: Install mongodb on all host & tune OS configuration
+  user: local
+  become_method: sudo
+  become: yes
+  hosts: primary, secondary
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  roles:
+    - mongo-basic-install
+    - tune-system-conf
+
+# Prepare replica set master
+- name: Prepare replica set master
+  user: local
+  become_method: sudo
+  become: yes
+  hosts: primary
+  vars:
+    ansible_ssh_private_key_file: ../Terraform/ssh-access-key.pem
+  roles:
+    - mongo-change-db
+    - mongo-config-replicaSet
+    - start-mongod-service
+    - wait_master
+    - wait_connection
+    # - create-admin-users -> need blazeMeter admin & pass
+    - mongo-shutdown-rs-master

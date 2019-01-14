@@ -1,0 +1,23 @@
+---
+- name: Set Up mongod.conf
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: check if log folder already exists
+  stat: path={hostvars[inventory_hostname]['keyFile_path']}}
+  register: log_folder
+
+- name: re-create log folder
+  file: path={hostvars[inventory_hostname]['keyFile_path']}} state=directory
+  when: log_folder.stat.isdir is defined and log_folder.stat.isdir == false
+
+- name: copy security key file to nodes
+  copy: src=/tmp/mongodb-keyfile dest={{hostvars[inventory_hostname]['keyFile_path']}} mode=0400
+
+- name: change access right of key file
+  file: path={{hostvars[inventory_hostname]['keyFile_path']}} state=file owner=mongod group=mongod
+

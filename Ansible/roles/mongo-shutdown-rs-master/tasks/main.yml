@@ -1,0 +1,6 @@
+---
+- name: copy shutdowndb script
+  template: src=shutdowndb.j2 dest=/tmp/shutdowndb.js
+
+- name: shutdown replica set primary
+  shell: mongo < /tmp/shutdowndb.js
