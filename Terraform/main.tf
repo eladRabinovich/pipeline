@@ -1,7 +1,7 @@
 // Configure the Google Cloud provider
 provider "google" {
- credentials = "${file("${var.credentials}")}"
- //credentials = "${file("./creds/serviceaccount.json")}"
+ //credentials = "${file("${var.credentials}")}"
+ credentials = "${file("./creds/serviceaccount.json")}"
  project     = "${var.gcp_project}"
  region      = "${var.region}"
 }
