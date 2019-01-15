@@ -1,1 +1,1 @@
-rs.initiate({_id: "{{hostvars[inventory_hostname]['rep_name']}}", members: [{_id: 0, host: "{{groups['privatePrimary'][0]}}:27017"}]})
+rs.initiate({_id: "{{hostvars[inventory_hostname]['rep_name']}}", members: [{_id: 0, host: "{{groups['primary'][0]}}:27017"}]})
