@@ -27,5 +27,5 @@
     - start-mongod-service
     - wait_master
     - wait_connection
-    # - create-admin-users -> need blazeMeter admin & pass
+    - create-admin-users -> need blazeMeter admin & pass
     - mongo-shutdown-rs-master
