@@ -101,6 +101,22 @@ resource "google_compute_instance" "mongodb-instance" {
   }
 }
 
+data "google_compute_network" "er-vpc-jenkins" {
+  name = "er-vpc-jenkins"
+}
+
+resource "google_compute_network_peering" "jenkins" {
+  name = "jenkins-mongodb"
+  network = "${google_compute_network.vpc.self_link}"
+  peer_network = "${data.google_compute_network.er-vpc-jenkins.self_link}"
+}
+
+resource "google_compute_network_peering" "mongodb-dr" {
+  name = "mongodb-jenkins"
+  network = "${data.google_compute_network.er-vpc-jenkins.self_link}"
+  peer_network = "${google_compute_network.vpc.self_link}"
+}
+
 output "nodesIps" {
   value = ["${google_compute_instance.mongodb-instance.*.network_interface.0.network_ip}"]
 }
