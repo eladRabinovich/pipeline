@@ -1,4 +1,4 @@
 use admin;
 db.auth("{{ hostvars[inventory_hostname]['db_user_admin_username'] }}","{{ hostvars[inventory_hostname]['db_user_admin_password'] }}")
-rs.add({host:"{{ groups['privateSecondary'][0] }}:27017", priority: 0, votes: 0 });
-rs.add({host:"{{ groups['privateSecondary'][1] }}:27017", priority: 0, votes: 0 });
+rs.add({host:"{{ groups['secondary'][0] }}:27017", priority: 0, votes: 0 });
+rs.add({host:"{{ groups['secondary'][1] }}:27017", priority: 0, votes: 0 });
